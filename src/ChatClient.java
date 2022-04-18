@@ -84,8 +84,9 @@ public class ChatClient {
         }
     }
 
-    // method: main
+    // method: main - attempts to establish connection with server and creates a client object
     public static void main(String[] args) {
+        // CLI configuration
         try {
             int serverPort = 14001;
             int i = 0;
@@ -115,16 +116,18 @@ public class ChatClient {
             System.out.println("Port: " + Integer.toString(serverPort));
             System.out.println("Address: " + hostAddress);
 
-            // scanner for client username
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter your client username: ");
-            String clientUsername = scanner.nextLine();
-
-            // create socket object and client object to enable connection
+            // create socket and client to enable connection, then gather user details
             Socket socket;
             ChatClient client;
+            Scanner scanner;
+            String clientUsername;
             try {
+                System.out.println("Attempting to connect with server, please wait...");
                 socket = new Socket(hostAddress, serverPort);
+                System.out.println("Connection successful.");
+                scanner = new Scanner(System.in);
+                System.out.println("Enter your client username: ");
+                clientUsername = scanner.nextLine();
                 client = new ChatClient(socket, clientUsername);
                 // call methods for client functionality - receiving will occur simultaneously due to threading
                 client.receiveMessage();

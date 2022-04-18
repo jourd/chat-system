@@ -18,7 +18,7 @@ public class ChatServer {
                 // open server socket and await connections from clients
                 Socket clientSocket = serverSocket.accept();
                 // state when successful connection with client is made
-                System.out.println("New client has connected :)");
+                System.out.println("New client has successfully connected.");
 
                 // Pass newly established connection (socket) to a thread (runnable implementation)
                 ChatClientThread clientThread = new ChatClientThread(clientSocket);
@@ -43,15 +43,17 @@ public class ChatServer {
 
     // method: main - creates server object and runs said object
     public static void main(String[] args) {
+        // CLI configuration
         try {
             int serverPort = 14001;
+            // check for -csp parameter to change server port
             if (args.length > 0) {
                 if (!args[0].equals("-csp")) {
-                    System.err.println("Option -csp is the only one accepted");
+                    System.err.println("Command line interface options supported: -csp");
                     System.exit(1);
                 }
                 if (args.length != 2) {
-                    System.err.println("Option -csp need only an integer for the port");
+                    System.err.println("Option -csp requires only one argument.");
                     System.exit(1);
                 }
                 try {
@@ -63,8 +65,8 @@ public class ChatServer {
             }
             ServerSocket chatroomServerSocket = new ServerSocket(serverPort);
             ChatServer chatServer = new ChatServer(chatroomServerSocket);
-            System.out.println("Chat server online.");
             System.out.println("Port: " + serverPort);
+            System.out.println("Chat server online.");
             chatServer.runServer();
         } catch (IOException e) {
             e.printStackTrace();
