@@ -124,7 +124,7 @@ public class ChatClient {
             try {
                 System.out.println("Attempting to connect with server, please wait...");
                 socket = new Socket(hostAddress, serverPort);
-                System.out.println("Connection successful.");
+                System.out.println("Connection successful! Welcome to the chatroom.");
                 scanner = new Scanner(System.in);
                 System.out.println("Enter your client username: ");
                 clientUsername = scanner.nextLine();

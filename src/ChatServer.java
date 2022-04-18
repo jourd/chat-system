@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -49,11 +50,11 @@ public class ChatServer {
             // check for -csp parameter to change server port
             if (args.length > 0) {
                 if (!args[0].equals("-csp")) {
-                    System.err.println("Command line interface options supported: -csp");
+                    System.err.println("The following command line interface options supported: -csp");
                     System.exit(1);
                 }
                 if (args.length != 2) {
-                    System.err.println("Option -csp requires only one argument.");
+                    System.err.println("Command line interface option -csp requires only one argument.");
                     System.exit(1);
                 }
                 try {
@@ -68,7 +69,9 @@ public class ChatServer {
             System.out.println("Port: " + serverPort);
             System.out.println("Chat server online.");
             chatServer.runServer();
-        } catch (IOException e) {
+        } catch (ConnectException e) {
+            System.out.println("Connection error: Are you sure there is a server listening?");
+        }  catch (IOException e) {
             e.printStackTrace();
         }
     }
