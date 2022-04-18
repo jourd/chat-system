@@ -44,10 +44,11 @@ public class ChatServer {
                 while (!serverSocket.isClosed()) {
                     try {
                         adminMessage = bufferedReader.readLine();
-                        System.out.println("Received: " + adminMessage);
+                        // echo input for confirmationtion
+                        System.out.println("[Received]: " + adminMessage);
                         if (adminMessage != null && adminMessage.equals("EXIT")) {
-                            System.out.println("Admin has initiated server shutdown. The server and chatroom will now close. Bye!");
-                            // TODO broadcast to clients
+                            System.out.println("Server shutdown initiated, the server and chatroom will now close. Bye!");
+                            ChatClientThread.serverShutdownAlert();
                             closeServerSocket();
                             System.exit(1);
                         }

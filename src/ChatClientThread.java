@@ -92,6 +92,19 @@ public class ChatClientThread implements Runnable {
         }
     }
 
+    // method: broadcast server and chatroom shutdown
+    public static void serverShutdownAlert(){
+        for (ChatClientThread clientThread : ChatClientThread.activeClientThreads) {
+            try {
+                clientThread.bufferedWriter.write("[SERVER]: Server and chatroom are SHUTTING DOWN. Thank you for joining.");
+                clientThread.bufferedWriter.newLine();
+                clientThread.bufferedWriter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     // method: remove clientThread from the active client thread list and notifies chatroom
     public void removeChatClientThread() {
         activeClientThreads.remove(this);
