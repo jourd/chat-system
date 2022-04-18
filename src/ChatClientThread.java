@@ -55,21 +55,25 @@ public class ChatClientThread implements Runnable {
         }
     }
 
-    // method: broadcasts client's messages to the chatroom using the ArrayList of active clients
+    // method: sends the message to the respective client
+    public void sendMessageToClient(String messageToSend) {
+        try {
+            // use each clientThread's bufferedWriter to write the message to the associated client
+            bufferedWriter.write(messageToSend);
+            // append messageToSend with new-line since the messageFromClient uses .readLine()
+            bufferedWriter.newLine();
+            // manually flush the buffer in case it is not filled
+            bufferedWriter.flush();
+        } catch (IOException e) {
+            closeClientThread(socket, bufferedReader, bufferedWriter);
+        }
+    }
+
+    // method: broadcasts message other clients in the chatroom using the ArrayList of active clients
     public void messageChatroom(String messageToSend){
         for (ChatClientThread clientThread : activeClientThreads) {
-            try {
-                // message to all OTHER clients
-                if (!clientThread.clientUsername.equals(clientUsername)) {
-                    // use each clientThread's bufferedWriter to write the message to the associated client
-                    clientThread.bufferedWriter.write(messageToSend);
-                    // append messageToSend with new-line since the messageFromClient uses .readLine()
-                    clientThread.bufferedWriter.newLine();
-                    // manually flush the buffer in case it is not filled
-                    clientThread.bufferedWriter.flush();
-                }
-            } catch (IOException e) {
-                closeClientThread(socket, bufferedReader, bufferedWriter);
+            if (!clientThread.clientUsername.equals(clientUsername)) {
+                clientThread.sendMessageToClient(messageToSend);
             }
         }
     }
@@ -95,13 +99,7 @@ public class ChatClientThread implements Runnable {
     // method: broadcast server and chatroom shutdown
     public static void serverShutdownAlert(){
         for (ChatClientThread clientThread : ChatClientThread.activeClientThreads) {
-            try {
-                clientThread.bufferedWriter.write("[SERVER]: Server and chatroom are SHUTTING DOWN. Thank you for joining.");
-                clientThread.bufferedWriter.newLine();
-                clientThread.bufferedWriter.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            clientThread.sendMessageToClient("[SERVER]: Server and chatroom are SHUTTING DOWN. Take care.");
         }
     }
 
