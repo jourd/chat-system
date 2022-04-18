@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -120,12 +121,18 @@ public class ChatClient {
             String clientUsername = scanner.nextLine();
 
             // create socket object and client object to enable connection
-            Socket socket = new Socket(hostAddress, serverPort);
-            ChatClient client = new ChatClient(socket, clientUsername);
-
-            // call methods for client functionality - receiving will occur simultaneously due to threading
-            client.receiveMessage();
-            client.sendMessage();
+            Socket socket;
+            ChatClient client;
+            try {
+                socket = new Socket(hostAddress, serverPort);
+                client = new ChatClient(socket, clientUsername);
+                // call methods for client functionality - receiving will occur simultaneously due to threading
+                client.receiveMessage();
+                client.sendMessage();
+            } catch (ConnectException e) {
+                System.out.println("Connection error: server cannot be found at specified address.");
+                System.exit(1);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
