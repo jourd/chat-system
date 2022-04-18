@@ -116,19 +116,16 @@ public class ChatClient {
             System.out.println("Port: " + Integer.toString(serverPort));
             System.out.println("Address: " + hostAddress);
 
-            // create socket and client to enable connection, then gather user details
-            Socket socket;
-            ChatClient client;
-            Scanner scanner;
             String clientUsername;
+            // create socket and client to enable connection, then gather user details
             try {
                 System.out.println("Attempting to connect with server, please wait...");
-                socket = new Socket(hostAddress, serverPort);
+                Socket socket = new Socket(hostAddress, serverPort);
                 System.out.println("Connection successful! Welcome to the chatroom.");
-                scanner = new Scanner(System.in);
+                Scanner scanner = new Scanner(System.in);
                 System.out.println("Enter your client username: ");
                 clientUsername = scanner.nextLine();
-                client = new ChatClient(socket, clientUsername);
+                ChatClient client = new ChatClient(socket, clientUsername);
                 // call methods for client functionality - receiving will occur simultaneously due to threading
                 client.receiveMessage();
                 client.sendMessage();

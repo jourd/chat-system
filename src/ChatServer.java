@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -6,10 +6,14 @@ import java.net.Socket;
 public class ChatServer {
 
     private ServerSocket serverSocket;
+    // used to read data from the server console - assumed admin user
+    private BufferedReader bufferedReader;
+
 
     // constructor:
     public ChatServer(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
+        this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
     }
 
     // method: run server to continuously listen for new client connections
@@ -31,10 +35,37 @@ public class ChatServer {
         }
     }
 
+    // method THREADING: listens for input from the server's console - user is considered admin
+    public void readAdminMessage() {
+        Thread stAdminMessage = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String adminMessage;
+                while (!serverSocket.isClosed()) {
+                    try {
+                        adminMessage = bufferedReader.readLine();
+                        System.out.println("Received: " + adminMessage);
+                        if (adminMessage != null && adminMessage.equals("EXIT")) {
+                            System.out.println("Admin has initiated server shutdown. The server and chatroom will now close. Bye!");
+                            // TODO broadcast to clients
+                            closeServerSocket();
+                            System.exit(1);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("Server cannot currently accept admin messages. Please restart.");
+                    }
+                }
+            }
+        });
+        stAdminMessage.start();
+    }
+
     // method: closes server socket
     public void closeServerSocket() {
         try {
             if (serverSocket != null) {
+                bufferedReader.close();
                 serverSocket.close();
             }
         } catch (IOException e) {
@@ -68,6 +99,8 @@ public class ChatServer {
             ChatServer chatServer = new ChatServer(chatroomServerSocket);
             System.out.println("Port: " + serverPort);
             System.out.println("Chat server online.");
+            // call methods for server functionality - receiving admin input will occur simultaneously due to threading
+            chatServer.readAdminMessage();
             chatServer.runServer();
         } catch (ConnectException e) {
             System.out.println("Connection error: Are you sure there is a server listening?");

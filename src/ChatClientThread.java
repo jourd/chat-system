@@ -55,7 +55,7 @@ public class ChatClientThread implements Runnable {
         }
     }
 
-    // method: sends client's messages to the chatroom using the ArrayList of active clients
+    // method: broadcasts client's messages to the chatroom using the ArrayList of active clients
     public void messageChatroom(String messageToSend){
         for (ChatClientThread clientThread : activeClientThreads) {
             try {
