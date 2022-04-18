@@ -63,6 +63,8 @@ public class ChatServer {
             }
             ServerSocket chatroomServerSocket = new ServerSocket(serverPort);
             ChatServer chatServer = new ChatServer(chatroomServerSocket);
+            System.out.println("Chat server online.");
+            System.out.println("Port: " + serverPort);
             chatServer.runServer();
         } catch (IOException e) {
             e.printStackTrace();

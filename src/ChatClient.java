@@ -86,17 +86,44 @@ public class ChatClient {
     // method: main
     public static void main(String[] args) {
         try {
-            // start scanner for client terminal
+            int serverPort = 14001;
+            int i = 0;
+            String hostAddress = "localHost";
+            while(args.length > i + 1) {
+                System.out.println("Looping");
+                // check for -ccp parameter to change client port
+                if(args[i].equals("-ccp")) {
+                    try {
+                        serverPort = Integer.parseInt(args[i + 1]);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Argument for -ccp must be an integer.");
+                        System.exit(1);
+                    }
+                }
+                // check for -cca parameter to change client address
+                else if(args[i].equals("-cca")) {
+                    hostAddress = args[i + 1];
+                }
+                // unknown parameter entered
+                else {
+                    System.err.println("Option " + args[i] + " unknown.");
+                    System.exit(1);
+                }
+                i += 2;
+            }
+            System.out.println("Port: " + Integer.toString(serverPort));
+            System.out.println("Address: " + hostAddress);
+
+            // scanner for client username
             Scanner scanner = new Scanner(System.in);
             System.out.println("Enter your client username: ");
-            // will capture client's username
             String clientUsername = scanner.nextLine();
 
             // create socket object and client object to enable connection
-            Socket socket = new Socket("localHost", 14014);
+            Socket socket = new Socket(hostAddress, serverPort);
             ChatClient client = new ChatClient(socket, clientUsername);
 
-            // call methods for client functionality - listening will occur simultaneously due to threading
+            // call methods for client functionality - receiving will occur simultaneously due to threading
             client.receiveMessage();
             client.sendMessage();
         } catch (IOException e) {
