@@ -93,7 +93,7 @@ public class ChatClient {
             String clientUsername = scanner.nextLine();
 
             // create socket object and client object to enable connection
-            Socket socket = new Socket("localHost", 14001);
+            Socket socket = new Socket("localHost", 14014);
             ChatClient client = new ChatClient(socket, clientUsername);
 
             // call methods for client functionality - listening will occur simultaneously due to threading
