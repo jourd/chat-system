@@ -44,7 +44,24 @@ public class ChatServer {
     // method: main - creates server object and runs said object
     public static void main(String[] args) {
         try {
-            ServerSocket chatroomServerSocket = new ServerSocket(14001);
+            int serverPort = 14001;
+            if (args.length > 0) {
+                if (!args[0].equals("-csp")) {
+                    System.err.println("Option -csp is the only one accepted");
+                    System.exit(1);
+                }
+                if (args.length != 2) {
+                    System.err.println("Option -csp need only an integer for the port");
+                    System.exit(1);
+                }
+                try {
+                    serverPort = Integer.parseInt(args[1]);
+                } catch (NumberFormatException e) {
+                    System.err.println("Argument for -csp must be an integer.");
+                    System.exit(1);
+                }
+            }
+            ServerSocket chatroomServerSocket = new ServerSocket(serverPort);
             ChatServer chatServer = new ChatServer(chatroomServerSocket);
             chatServer.runServer();
         } catch (IOException e) {
